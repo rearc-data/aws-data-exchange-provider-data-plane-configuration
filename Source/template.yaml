@@ -18,10 +18,15 @@ Parameters:
       - ERROR
       - CRITICAL
     Default: DEBUG
-  AssetBucket:
+  AssetBucketName:
     Type: String
     Default: rearc-data-provider
     Description: Bucket containing assets and referenced in the manifest.
+  CreateAssetBucket:
+    Type: String
+    AllowedValues:
+      - true
+      - false
   ControlPlaneAccount:
     Type: String
     Description: ID of the control plane account to connect to
@@ -31,7 +36,6 @@ Parameters:
       External ID for connecting to the control plane - provided during
       onboarding
   
-  
 Mappings:
   Send:
     AnonymousUsage:
@@ -40,10 +44,17 @@ Mappings:
     SolutionDetails:
       Version: 1.0.0
 
+Conditions:
+  ShouldCreateAssetBucket: !Equals
+    - true
+    - !Ref CreateAssetBucket
+
 Resources:
   AssetBucket:
     Type: 'AWS::S3::Bucket'
-    Properties: {}
+    Condition: ShouldCreateAssetBucket
+    Properties: 
+      BucketName: !Ref AssetBucketName
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 87ff4070-acae-4e1a-aec1-6ab8df059850
@@ -71,13 +82,14 @@ Resources:
   #     'AWS::CloudFormation::Designer':
   #       id: e3891160-491b-463d-bffc-7edc52054a38
   CrossAccountRole:
+    Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
         Statement:
           - Action: 'sts:AssumeRole'
             Effect: Allow
             Principal:
-              AWS: !Sub 'arn:aws:iam::${TrustedAccount}:root'
+              AWS: !Sub 'arn:aws:iam::${ControlPlaneAccount}:root'
             Condition:
               StringEquals:
                 'sts:ExternalId': !Ref ExternalId
