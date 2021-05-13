@@ -3,44 +3,7 @@ Transform: 'AWS::Serverless-2016-10-31'
 Description: >
   Create S3 buckets and cross-account role for ADX  data plane with minimal
   permissions.
-Metadata:
-  'AWS::CloudFormation::Designer':
-    87ff4070-acae-4e1a-aec1-6ab8df059850:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 120
-        'y': 120
-      z: 1
-      embeds: []
-    e3891160-491b-463d-bffc-7edc52054a38:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 120
-        'y': 0
-      z: 1
-      embeds: []
-    c5d3dd49-7056-403c-8e91-e9a5bab66355:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 240
-        'y': 210
-      z: 1
-      embeds: []
-    9495375c-9b87-4c83-b084-0a0092210e49:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 60
-        'y': 210
-      z: 1
-      embeds: []
+
 Globals:
   Function:
     Timeout: 300
@@ -59,14 +22,6 @@ Parameters:
     Type: String
     Default: rearc-data-provider
     Description: Bucket containing assets and referenced in the manifest.
-  ManifestBucketLoggingBucket:
-    Type: String
-    Default: adx-provider-coordinator-rearc-logging
-    Description: Bucket to store server access logs associated with the manifest bucket
-  ManifestBucketLoggingPrefix:
-    Type: String
-    Default: adx-publishing-workflow-test-logs/
-    Description: Prefix location for server access logs associated with the manifest bucket
   ControlPlaneAccount:
     Type: String
     Description: ID of the control plane account to connect to
@@ -76,6 +31,7 @@ Parameters:
       External ID for connecting to the control plane - provided during
       onboarding
   
+  
 Mappings:
   Send:
     AnonymousUsage:
@@ -83,10 +39,7 @@ Mappings:
   SolutionInformation:
     SolutionDetails:
       Version: 1.0.0
-  SourceCode:
-    General:
-      S3Bucket: '%%BUCKET_NAME%%'
-      KeyPrefix: '%%SOLUTION_NAME%%/%%VERSION%%'
+
 Resources:
   AssetBucket:
     Type: 'AWS::S3::Bucket'
@@ -94,29 +47,29 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 87ff4070-acae-4e1a-aec1-6ab8df059850
-  AssetsBucketPolicy:
-    Type: 'AWS::S3::BucketPolicy'
-    Properties:
-      Bucket: !Ref AssetBucket
-      PolicyDocument:
-        Statement:
-          - Action:
-              - 's3:GetObject'
-            Effect: Allow
-            Resource: !Join 
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref AssetBucket
-                - /*
-            Principal: '*'
-            Condition:
-              StringLike:
-                'aws:Referer':
-                  - 'http://www.example.com/*'
-                  - 'http://example.net/*'
-    Metadata:
-      'AWS::CloudFormation::Designer':
-        id: e3891160-491b-463d-bffc-7edc52054a38
+  # AssetsBucketPolicy:
+  #   Type: 'AWS::S3::BucketPolicy'
+  #   Properties:
+  #     Bucket: !Ref AssetBucket
+  #     PolicyDocument:
+  #       Statement:
+  #         - Action:
+  #             - 's3:GetObject'
+  #           Effect: Allow
+  #           Resource: !Join 
+  #             - ''
+  #             - - 'arn:aws:s3:::'
+  #               - !Ref AssetBucket
+  #               - /*
+  #           Principal: '*'
+  #           Condition:
+  #             StringLike:
+  #               'aws:Referer':
+  #                 - 'http://www.example.com/*'
+  #                 - 'http://example.net/*'
+  #   Metadata:
+  #     'AWS::CloudFormation::Designer':
+  #       id: e3891160-491b-463d-bffc-7edc52054a38
   CrossAccountRole:
     Properties:
       AssumeRolePolicyDocument:
@@ -134,11 +87,20 @@ Resources:
         - PolicyDocument:
             Statement:
               - Action:
-                  - 'ec2:Describe*'
+                - dataexchange:GetDataSet
+                - dataexchange:ListDataSets
+                - dataexchange:UpdateRevision
+                - dataexchange:ListJobs
+                - dataexchange:GetJob
+                - dataexchange:CreateAsset
+                - dataexchange:GetRevision
+                - dataexchange:CreateJob
+                - dataexchange:CreateRevision
+                - dataexchange:UpdateDataSet
+                - dataexchange:UpdateAsset
+                - dataexchange:StartJob
+                - dataexchange:ListDataSetRevisions
                 Effect: Allow
-                Resource: '*'
+                Resource: "*"
           PolicyName: RearcControlPlaneAccountAccess
-    Type: 'AWS::IAM::Role'
-    Metadata:
-      'AWS::CloudFormation::Designer':
-        id: c5d3dd49-7056-403c-8e91-e9a5bab66355
+
