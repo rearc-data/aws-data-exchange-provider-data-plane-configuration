@@ -113,12 +113,19 @@ Resources:
             Statement: 
               - Effect: Allow
                 Action: 
-                  - dataexchange:UpdateRevision
-                Resource: '*' 
-              - Effect: Allow
-                Action: 
                   - aws-marketplace:StartChangeSet
                   - aws-marketplace:DescribeEntity
                   - aws-marketplace:DescribeChangeSet
                 Resource: '*'
+        - PolicyName: S3AssetBucketFullAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement: 
+              - Effect: Allow
+                Action: 
+                  - s3:*
+                Resource: !Join
+                  - ""
+                  - - 'arn:aws:s3:::'
+                    - !Ref AssetBucketName
 
