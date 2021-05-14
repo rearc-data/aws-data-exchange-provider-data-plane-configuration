@@ -80,9 +80,7 @@ Resources:
             Statement: 
               - Effect: Allow
                 Action: 
-                  - aws-marketplace:StartChangeSet
-                  - aws-marketplace:DescribeEntity
-                  - aws-marketplace:DescribeChangeSet
+                  - aws-marketplace:*
                 Resource: '*'
         - PolicyName: S3AssetBucketFullAccess
           PolicyDocument:
