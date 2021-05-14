@@ -8,16 +8,16 @@ Globals:
   Function:
     Timeout: 300
 Parameters:
-  LoggingLevel:
-    Type: String
-    Description: Minimum logging level to write out to CloudWatch
-    AllowedValues:
-      - DEBUG
-      - INFO
-      - WARNING
-      - ERROR
-      - CRITICAL
-    Default: DEBUG
+  # LoggingLevel:
+  #   Type: String
+  #   Description: Minimum logging level to write out to CloudWatch
+  #   AllowedValues:
+  #     - DEBUG
+  #     - INFO
+  #     - WARNING
+  #     - ERROR
+  #     - CRITICAL
+  #   Default: DEBUG
   AssetBucketName:
     Type: String
     Default: rearc-data-provider
@@ -35,14 +35,6 @@ Parameters:
     Description: >-
       External ID for connecting to the control plane - provided during
       onboarding
-  
-Mappings:
-  Send:
-    AnonymousUsage:
-      Data: 'Yes'
-  SolutionInformation:
-    SolutionDetails:
-      Version: 1.0.0
 
 Conditions:
   ShouldCreateAssetBucket: !Equals
@@ -96,7 +88,8 @@ Resources:
             Sid: ''
       Path: /
       Policies:
-        - PolicyDocument:
+        - PolicyName: RearcControlPlaneAccountAccess
+          PolicyDocument:
             Statement:
               - Action:
                 - dataexchange:GetDataSet
@@ -114,5 +107,18 @@ Resources:
                 - dataexchange:ListDataSetRevisions
                 Effect: Allow
                 Resource: "*"
-          PolicyName: RearcControlPlaneAccountAccess
+        - PolicyName: MarketplaceActions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement: 
+              - Effect: Allow
+                Action: 
+                  - dataexchange:UpdateRevision
+                Resource: '*' 
+              - Effect: Allow
+                Action: 
+                  - aws-marketplace:StartChangeSet
+                  - aws-marketplace:DescribeEntity
+                  - aws-marketplace:DescribeChangeSet
+                Resource: '*'
 
