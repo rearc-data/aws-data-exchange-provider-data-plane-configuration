@@ -93,4 +93,5 @@ Resources:
                   - ""
                   - - 'arn:aws:s3:::'
                     - !Ref AssetBucketName
+                    - '/*'
 
