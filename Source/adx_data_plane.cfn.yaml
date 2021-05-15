@@ -80,18 +80,44 @@ Resources:
             Statement: 
               - Effect: Allow
                 Action: 
-                  - aws-marketplace:*
+                  - "aws-marketplace:ListChangeSets"
+                  - "aws-marketplace:DescribeChangeSet"
+                  - "aws-marketplace:StartChangeSet"
+                  - "aws-marketplace:CancelChangeSet"
+                  - "aws-marketplace:ListEntities"
+                  - "aws-marketplace:DescribeEntity"
+                  - "aws-marketplace:ListTasks"
+                  - "aws-marketplace:DescribeTask"
+                  - "aws-marketplace:UpdateTask"
+                  - "aws-marketplace:CompleteTask"
                 Resource: '*'
         - PolicyName: S3AssetBucketFullAccess
           PolicyDocument:
             Version: '2012-10-17'
-            Statement: 
+            Statement:
               - Effect: Allow
-                Action: 
-                  - s3:*
-                Resource: !Join
-                  - ""
-                  - - 'arn:aws:s3:::'
-                    - !Ref AssetBucketName
-                    - '/*'
-
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - !Join ['', ['arn:aws:s3:::',!Ref AssetBucketName, '/*']]
+                  - !Join ['', ['arn:aws:s3:::',!Ref AssetBucketName, '/*']]
+                Condition:
+                  ForAnyValue:StringEquals:
+                    aws:CalledVia: dataexchange.amazonaws.com
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource: arn:aws:s3:::*aws-data-exchange*
+                Condition:
+                  ForAnyValue:StringEquals:
+                    aws:CalledVia: dataexchange.amazonaws.com
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                Resource: arn:aws:s3:::*aws-data-exchange*
+                Condition:
+                  ForAnyValue:StringEquals:
+                    aws:CalledVia: dataexchange.amazonaws.com
