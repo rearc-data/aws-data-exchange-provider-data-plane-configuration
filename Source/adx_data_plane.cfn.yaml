@@ -55,7 +55,7 @@ Resources:
             Sid: ''
       Path: /
       Policies:
-        - PolicyName: RearcControlPlaneAccountAccess
+        - PolicyName: DataExchangeActions
           PolicyDocument:
             Statement:
               - Action:
@@ -91,7 +91,7 @@ Resources:
                   - "aws-marketplace:UpdateTask"
                   - "aws-marketplace:CompleteTask"
                 Resource: '*'
-        - PolicyName: S3AssetBucketFullAccess
+        - PolicyName: S3AssetBucketAccess
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -101,10 +101,14 @@ Resources:
                   - s3:ListBucket
                 Resource:
                   - !Join ['', ['arn:aws:s3:::',!Ref AssetBucketName, '/*']]
-                  - !Join ['', ['arn:aws:s3:::',!Ref AssetBucketName, '/*']]
+                  - !Join ['', ['arn:aws:s3:::',!Ref AssetBucketName, '*']]
                 Condition:
                   ForAnyValue:StringEquals:
                     aws:CalledVia: dataexchange.amazonaws.com
+        - PolicyName: S3ADXBucketAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
               - Effect: Allow
                 Action:
                   - s3:GetObject
