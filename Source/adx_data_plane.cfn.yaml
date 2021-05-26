@@ -35,6 +35,8 @@ Resources:
   AssetBucket:
     Type: 'AWS::S3::Bucket'
     Condition: ShouldCreateAssetBucket
+    DeletionPolicy: "Retain"
+    UpdateReplacePolicy: "Retain"
     Properties: 
       BucketName: !Ref AssetBucketName
     Metadata:
