@@ -44,7 +44,7 @@ Once the manifest file lands in the Manifests S3 bucket, Rearc's Data Platform w
 
 **Q: Why do you need to create a cross-account role?**
 
-*A: To publish data products on your behalf, we need access to AWS Data Exchange and AWS Marketplace from your account. To publish data assets, Data Exchange requires `GetItem` access to the S3 bucket where those assets reside, as well as to an Amazon-managed ADX bucket. We have set up the access policy for the cross-account role to give the minimum set of permissions necessary for us to publish on your behalf, and our access policy **does not** give us access to your data assets in S3 (access to S3 is conditioned to the data exchange service only).*
+*A: To publish data products on your behalf, we need access to AWS Data Exchange and AWS Marketplace from your account. To publish data assets, Data Exchange requires `ListBucket` and `GetObject` access to the S3 bucket where those assets reside, as well as to an Amazon-managed ADX bucket. We have set up the access policy for the cross-account role to give the minimum set of permissions necessary for us to publish on your behalf, and our access policy **does not** give us access to your data assets in S3 (access to S3 is conditioned to the data exchange service only).*
 
 **Q: I still don't want to create a cross-account role. Is there an alternative for me?**
 
