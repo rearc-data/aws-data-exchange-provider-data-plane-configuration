@@ -2,11 +2,11 @@
     <img src="./rearc_logo_rgb.png" alt="Rearc Logo" title="Rearc Logo" height="52" />
 </a>
 
-# Rearc Data Platform - Data Plane
+# Rearc Data Platform - Data Plane Configuration
 This repository includes all the resources and code required to get onboarded on the Rearc Data Platform.
 
 ## What is this?
-Rearc provides a data platform for data providers which dramatically simplifies providing data products via AWS Data Exchange (ADX).
+Rearc provides a data platform for data providers which simplifies providing data products via AWS Data Exchange (ADX).
 
 The platform publishes data and handles rate-limiting to avoid exceeding ADX's service limits, logging of publish operations, and insights for data providers.
 
@@ -45,7 +45,7 @@ Once the manifest file lands in the Manifests S3 bucket, Rearc's Data Platform w
 *A: To publish data products on your behalf, we need access to AWS Data Exchange and AWS Marketplace from your account. To publish data assets, Data Exchange requires `GetItem` access to the S3 bucket where those assets reside, as well as to an Amazon-managed ADX bucket. We have set up the access policy for the cross-account role to give the minimum set of permissions necessary for us to publish on your behalf, and our access policy **does not** give us access to your data assets in S3 (access to S3 is conditioned to the data exchange service only).*
 
 **Q: I still don't want to create a cross-account role. Is there an alternative for me?**
-*A: Yes! Our open-source [Publisher-Coordinator] project provides a subset of the functionality provided by the Rearc Data Platform in a solution that is hosted entirely within your AWS account. The trade-off is that the Publisher-Coordinator must be administered and updated by you, and the scope of the project is smaller.*
+*A: Yes! Our open-source [Publisher-Coordinator](https://github.com/rearc-data/aws-data-exchange-publisher-coordinator) project provides a subset of the functionality provided by the Rearc Data Platform in a solution that is hosted entirely within your AWS account. The trade-off is that the Publisher-Coordinator must be administered and updated by you, and the scope of the project is smaller.*
 
 ### Manifest File Format
 The manifest file should follow a specific format:
@@ -64,7 +64,7 @@ The manifest file should follow a specific format:
 ```
 
 ### Contact Details
-- If you find any issues with or have enhancement ideas for this project, open up a GitHub [issue](https://github.com/rearc-data/aws-data-exchange-provider-data-plane-configuration/issues) and we will gladly take a look at it. Better yet, submit a pull request. Any contributions you make are greatly appreciated :heart:.
+- If you find any issues with or have enhancement ideas for this project, open up a GitHub [issue](https://github.com/rearc-data/aws-data-exchange-provider-data-plane-configuration/issues) and we will gladly take a look at it. Better yet, submit a pull request. Any contributions you make are greatly appreciated :heart:
 - If you have any questions or feedback, send us an email at data@rearc.io.
 
 ### About Rearc
