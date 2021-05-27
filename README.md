@@ -39,12 +39,15 @@ Once the manifest file lands in the Manifests S3 bucket, Rearc's Data Platform w
 
 ## Q&A
 **Q: Why should we use this instead of using the AWS Data Exchange API (for example, via Boto3)?**
+
 *A: The ADX API has a number of [service limits](https://docs.aws.amazon.com/data-exchange/latest/userguide/limits.html) which can result in unexpected failures when exceeded. Rearc has created a platform that publishes data assets without exceeding these limits. In the near future, we also plan to add features such as insights around data pipeline stability and product popularity.*
 
 **Q: Why do you need to create a cross-account role?**
+
 *A: To publish data products on your behalf, we need access to AWS Data Exchange and AWS Marketplace from your account. To publish data assets, Data Exchange requires `GetItem` access to the S3 bucket where those assets reside, as well as to an Amazon-managed ADX bucket. We have set up the access policy for the cross-account role to give the minimum set of permissions necessary for us to publish on your behalf, and our access policy **does not** give us access to your data assets in S3 (access to S3 is conditioned to the data exchange service only).*
 
 **Q: I still don't want to create a cross-account role. Is there an alternative for me?**
+
 *A: Yes! Our open-source [Publisher-Coordinator](https://github.com/rearc-data/aws-data-exchange-publisher-coordinator) project provides a subset of the functionality provided by the Rearc Data Platform in a solution that is hosted entirely within your AWS account. The trade-off is that the Publisher-Coordinator must be administered and updated by you, and the scope of the project is smaller.*
 
 ### Manifest File Format
