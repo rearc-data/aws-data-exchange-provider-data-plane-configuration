@@ -25,6 +25,11 @@ Parameters:
     Description: >-
       External ID for connecting to the control plane - provided during
       onboarding
+  RegistrationTopicARN:
+    Type: String
+    Description: >-
+      SNS Topic ARN for registering with the control plane - provided during
+      onboarding
 
 Conditions:
   ShouldCreateAssetBucket: !Equals
@@ -127,3 +132,11 @@ Resources:
                 Condition:
                   ForAnyValue:StringEquals:
                     aws:CalledVia: dataexchange.amazonaws.com
+  # This custom resource phones home the cross-account ARN information to your company’s SNS topic
+  RegistrationCustomResource:
+    Properties:
+      ServiceToken: !Ref RegistrationTopicARN # Your Company’s SNS Topic Arn 
+      RoleArn: !GetAtt CrossAccountRole.Arn # The ARN of the IAM cross-account role generated above
+      AccountID: !Ref AWS::AccountId # The customer’s AWS account ID
+    Type: Custom::RegistrationCustomResource
+    Version: '1.0'
