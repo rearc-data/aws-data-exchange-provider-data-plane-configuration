@@ -17,20 +17,19 @@ Parameters:
     AllowedValues:
       - true
       - false
-  ControlPlaneAccount:
-    Type: String
-    Description: ID of the control plane account to connect to
-  ExternalId:
-    Type: String
-    Description: >-
-      External ID for connecting to the control plane - provided during
-      onboarding
   RegistrationTopicARN:
     Type: String
     Description: >-
       SNS Topic ARN for registering with the control plane - provided during
       onboarding
-
+  ControlPlaneAccount:
+    Type: String
+    Description: ID of the control plane account to connect to
+    Default: 412981388937
+  ExternalId:
+    Type: String
+    Description: External ID that Rearc will use when accessing resources on this account
+    Default: rearcdata
 Conditions:
   ShouldCreateAssetBucket: !Equals
     - true
@@ -135,8 +134,9 @@ Resources:
   # This custom resource phones home the cross-account ARN information to your company’s SNS topic
   RegistrationCustomResource:
     Properties:
-      ServiceToken: !Ref RegistrationTopicARN # Your Company’s SNS Topic Arn 
-      RoleArn: !GetAtt CrossAccountRole.Arn # The ARN of the IAM cross-account role generated above
-      AccountID: !Ref AWS::AccountId # The customer’s AWS account ID
+      ServiceToken: !Ref RegistrationTopicARN # Rearc's SNS Topic to onboard customers
+      ControlPlaneRoleArn: !GetAtt CrossAccountRole.Arn # The ARN of the IAM cross-account role generated above
+      ControlPlaneExternalId: !Ref ExternalId
+      CustomerID: !Ref AWS::AccountId # The customer’s AWS account ID
     Type: Custom::RegistrationCustomResource
     Version: '1.0'
