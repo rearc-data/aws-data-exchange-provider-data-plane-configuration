@@ -15,13 +15,13 @@ REGION="us-east-1"  # replace this with the name of AWS region you are running t
 PROFILE="default"  # replace this with your desired AWS credentials profile name 
 
 
-aws cloudformation create-stack --stack-name "$STACK_NAME" \
-  --template-body file://Source/adx_data_plane.cfn.yaml \
-  --parameters ParameterKey=ControlPlaneAccount,ParameterValue="$CONTROL_PLANE_AWS_ACCOUNT_NUMBER" \
-               ParameterKey=ExternalId,ParameterValue="$EXTERNAL_ID" \
-               ParameterKey=AssetBucketName,ParameterValue="$ASSET_BUCKET_NAME" \
-               ParameterKey=CreateAssetBucket,ParameterValue="$CREATE_ASSET_BUCKET" \
-               ParameterKey=RegistrationTopicARN,ParameterValue="$ONBOARDING_TOPIC_ARN" \
+aws cloudformation deploy --stack-name "$STACK_NAME" \
+  --template-file ./source/adx_data_plane.cfn.yaml \
+  --parameter-overrides ControlPlaneAccount="$CONTROL_PLANE_AWS_ACCOUNT_NUMBER" \
+              ExternalId="$EXTERNAL_ID" \
+              AssetBucketName="$ASSET_BUCKET_NAME" \
+              CreateAssetBucket="$CREATE_ASSET_BUCKET" \
+              RegistrationTopicARN="$ONBOARDING_TOPIC_ARN" \
   --capabilities "CAPABILITY_AUTO_EXPAND" "CAPABILITY_NAMED_IAM" "CAPABILITY_IAM" \
   --region "$REGION" \
   --profile $PROFILE    
