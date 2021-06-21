@@ -49,6 +49,9 @@ Resources:
   CrossAccountRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub 
+        - 'Rearc-CrossAccountRole-${DataPlaneAccount}'
+        - {DataPlaneAccount: !Ref AWS::AccountId }
       AssumeRolePolicyDocument:
         Statement:
           - Action: 'sts:AssumeRole'
@@ -131,12 +134,11 @@ Resources:
                 Condition:
                   ForAnyValue:StringEquals:
                     aws:CalledVia: dataexchange.amazonaws.com
-  # This custom resource phones home the cross-account ARN information to your company’s SNS topic
   RegistrationCustomResource:
     Properties:
-      ServiceToken: !Ref RegistrationTopicARN # Rearc's SNS Topic to onboard customers
-      ControlPlaneRoleArn: !GetAtt CrossAccountRole.Arn # The ARN of the IAM cross-account role generated above
+      ServiceToken: !Ref RegistrationTopicARN 
+      ControlPlaneRoleArn: !GetAtt CrossAccountRole.Arn 
       ControlPlaneExternalId: !Ref ExternalId
-      CustomerID: !Ref AWS::AccountId # The customer’s AWS account ID
+      CustomerID: !Ref AWS::AccountId 
     Type: Custom::RegistrationCustomResource
     Version: '1.0'
