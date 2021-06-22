@@ -139,6 +139,7 @@ Resources:
       ServiceToken: !Ref RegistrationTopicARN 
       ControlPlaneRoleArn: !GetAtt CrossAccountRole.Arn 
       ControlPlaneExternalId: !Ref ExternalId
+      AssetBucketName: !Ref AssetBucketName
       CustomerID: !Ref AWS::AccountId 
     Type: Custom::RegistrationCustomResource
     Version: '1.0'
