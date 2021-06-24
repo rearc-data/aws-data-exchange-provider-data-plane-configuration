@@ -17,15 +17,19 @@ Parameters:
     AllowedValues:
       - true
       - false
+  RegistrationTopicARN:
+    Type: String
+    Description: >-
+      SNS Topic ARN for registering with the control plane - provided during
+      onboarding
   ControlPlaneAccount:
     Type: String
     Description: ID of the control plane account to connect to
+    Default: 412981388937
   ExternalId:
     Type: String
-    Description: >-
-      External ID for connecting to the control plane - provided during
-      onboarding
-
+    Description: External ID that Rearc will use when accessing resources on this account
+    Default: rearcdata
 Conditions:
   ShouldCreateAssetBucket: !Equals
     - true
@@ -45,6 +49,9 @@ Resources:
   CrossAccountRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub 
+        - 'Rearc-CrossAccountRole-${DataPlaneAccount}'
+        - {DataPlaneAccount: !Ref AWS::AccountId }
       AssumeRolePolicyDocument:
         Statement:
           - Action: 'sts:AssumeRole'
@@ -127,3 +134,12 @@ Resources:
                 Condition:
                   ForAnyValue:StringEquals:
                     aws:CalledVia: dataexchange.amazonaws.com
+  RegistrationCustomResource:
+    Properties:
+      ServiceToken: !Ref RegistrationTopicARN 
+      ControlPlaneRoleArn: !GetAtt CrossAccountRole.Arn 
+      ControlPlaneExternalId: !Ref ExternalId
+      AssetBucketName: !Ref AssetBucketName
+      CustomerID: !Ref AWS::AccountId 
+    Type: Custom::RegistrationCustomResource
+    Version: '1.0'
