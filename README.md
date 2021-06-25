@@ -15,7 +15,7 @@ This repository includes everything you need to get started with Rearc's Data Pl
 ## Installation
 **Before running the following steps, please reach out to us at [data@rearc.io](mailto:data@rearc.io) so that we can help add you to the platform.**
 
-To install, simply deploy the [CDK Stack](Source/) inside the AWS account where your data products reside (or will reside).
+To install, simply deploy the [CloudFormation Stack](cloudformation/) or [CDK Stack](cdk/) inside the AWS account where your data products reside (or will reside).
 
 This will create a cross-account role that allows Rearc to perform a very limited set of ADX-related actions on your behalf, as well as an S3 bucket where data assets for publish are kept.
 
@@ -27,8 +27,13 @@ There are a few parameters that must be set:
 | **ControlPlaneAccount** | AWS account ID | The account ID of the Rearc control plane. Please reach out to data@rearc.io for this value. |
 | **ExternalId** | AWS External ID  | The External ID for the cross-account role. Please reach out to data@rearc.io for this value. |
 
+### CloudFormation Setup
+<a href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://s3.amazonaws.com/rearc-control-plane-cloudformation/adx-data-plane.cfn.yaml&stackName=ADXDataPlaneStack">
+    <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" alt="Launch Stack" title="Launch Stack" height="30" />
+</a>
+
 ### CDK Setup
-From the [Source](Source/) directory, run the following commands:
+From the [cdk](cdk/) directory, run the following commands:
 ```
 npm install
 npm run cdk deploy -- --parameters AssetBucketName=<bucket> --parameters CreateAssetBucket=<true|false> --parameters ControlPlaneAccount=<account> --parameters ExternalId=<id>
