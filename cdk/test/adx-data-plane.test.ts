@@ -22,13 +22,19 @@ test('Empty Stack', () => {
           ],
           "Description": "Defines if the asset bucket should be provisioned."
         },
+        "RegistrationTopicARN": {
+          "Type": "String",
+          "Description": "SNS Topic ARN for registering with the control plane - provided during onboarding."
+        },
         "ControlPlaneAccount": {
           "Type": "String",
+          "Default": "412981388937",
           "Description": "ID of the control plane account to connect to."
         },
         "ExternalId": {
           "Type": "String",
-          "Description": "External ID for connecting to the control plane - provided during onboarding."
+          "Default": "rearcdata",
+          "Description": "External ID that Rearc will use when accessing resources on this account."
         }
       },
       "Conditions": {
@@ -103,7 +109,18 @@ test('Empty Stack', () => {
               ],
               "Version": "2012-10-17"
             },
-            "Path": "/"
+            "Path": "/",
+            "RoleName": {
+              "Fn::Join": [
+                "",
+                [
+                  "Rearc-CrossAccountRole-",
+                  {
+                    "Ref": "ControlPlaneAccount"
+                  }
+                ]
+              ]
+            }
           }
         },
         "CrossAccountRoleDefaultPolicy212A317F": {
@@ -216,6 +233,31 @@ test('Empty Stack', () => {
               }
             ]
           }
+        },
+        "RegistrationCustomResource": {
+          "Type": "AWS::CloudFormation::CustomResource",
+          "Properties": {
+            "ServiceToken": {
+              "Ref": "RegistrationTopicARN"
+            },
+            "ControlPlaneRoleArn": {
+              "Fn::GetAtt": [
+                "CrossAccountRoleFACE29D1",
+                "Arn"
+              ]
+            },
+            "ControlPlaneExternalId": {
+              "Ref": "ExternalId"
+            },
+            "AssetBucketName": {
+              "Ref": "AssetBucketName"
+            },
+            "CustomerID": {
+              "Ref": "AWS::AccountId"
+            }
+          },
+          "UpdateReplacePolicy": "Delete",
+          "DeletionPolicy": "Delete"
         }
       }
     }, MatchStyle.EXACT))

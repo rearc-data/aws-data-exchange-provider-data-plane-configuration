@@ -19,19 +19,27 @@ export class ADXDataPlaneStack extends cdk.Stack {
       description: 'Defines if the asset bucket should be provisioned.'
     });
 
+    const registrationTopicARN = new cdk.CfnParameter(this, 'RegistrationTopicARN', {
+      type: 'String',
+      description: 'SNS Topic ARN for registering with the control plane - provided during onboarding.'
+    });
+
     const controlPlaneAccount = new cdk.CfnParameter(this, 'ControlPlaneAccount', {
       type: 'String',
+      default: '412981388937',
       description: 'ID of the control plane account to connect to.'
     });
 
     const externalId = new cdk.CfnParameter(this, 'ExternalId', {
       type: 'String',
-      description: 'External ID for connecting to the control plane - provided during onboarding.'
+      default: 'rearcdata',
+      description: 'External ID that Rearc will use when accessing resources on this account.'
     });
 
     const assetBucket = this.setupAssetBucket(assetBucketName, createAssetBucket);
 
     const crossAccountRole = new iam.Role(this, 'CrossAccountRole', {
+      roleName: `Rearc-CrossAccountRole-${controlPlaneAccount.valueAsString}`,
       assumedBy: new iam.PrincipalWithConditions(new iam.AccountPrincipal(controlPlaneAccount.valueAsString), {
         'StringEquals': {
           'sts:ExternalId': externalId.valueAsString
@@ -106,6 +114,16 @@ export class ADXDataPlaneStack extends cdk.Stack {
         }
       }
     }));
+
+    new cdk.CustomResource(this, 'RegistrationCustomResource', {
+      serviceToken: registrationTopicARN.valueAsString,
+      properties: {
+        ControlPlaneRoleArn: crossAccountRole.roleArn,
+        ControlPlaneExternalId: externalId.valueAsString,
+        AssetBucketName: assetBucketName.valueAsString,
+        CustomerID: this.account
+      }
+    });
   }
 
   setupAssetBucket(assetBucketName: cdk.CfnParameter, createAssetBucket: cdk.CfnParameter): s3.IBucket {
