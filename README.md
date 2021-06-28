@@ -28,7 +28,7 @@ There are a few parameters that must be set:
 | **ExternalId** | AWS External ID  | The External ID for the cross-account role. Please reach out to data@rearc.io for this value. |
 
 ### CloudFormation Setup
-<a href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https://s3.amazonaws.com/rearc-control-plane-cloudformation/adx-data-plane.cfn.yaml&stackName=ADXDataPlaneStack">
+<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https://s3.amazonaws.com/rearc-control-plane-cloudformation/adx-data-plane.cfn.yaml&stackName=ADXDataPlaneStack">
     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" alt="Launch Stack" title="Launch Stack" height="30" />
 </a>
 
