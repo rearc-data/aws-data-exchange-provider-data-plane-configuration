@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - cdk_setup
 
 jobs:
   deploy:
@@ -19,7 +20,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Build CloudFormation Template
+        run: |
+          cd cdk
+          npm install
+          npm run synth
+
       - name: Upload CloudFormation Template to S3
         uses: docker://amazon/aws-cli:latest
         with:
-          args: s3 cp cloudformation/adx-data-plane.cfn.yaml s3://rearc-control-plane-cloudformation/ --acl public-read
+          args: s3 cp cdk/adx-data-plane.cfn.yaml s3://rearc-control-plane-cloudformation/ --acl public-read

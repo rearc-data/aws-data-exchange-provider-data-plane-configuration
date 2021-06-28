@@ -20,9 +20,3 @@ jobs:
           cd cdk
           npm install
           npm test
-
-      - name: Validate CloudFormation
-        run: |
-          cd cdk
-          npm run synth
-          diff <(head -n -8 template.yaml) <(head -n -8 ../cloudformation/adx-data-plane.cfn.yaml)

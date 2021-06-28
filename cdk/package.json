@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "synth": "cdk synth > template.yaml"
+    "synth": "cdk synth > adx-data-plane.cfn.yaml"
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.110.0",
