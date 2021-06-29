@@ -15,17 +15,35 @@ This repository includes everything you need to get started with Rearc's Data Pl
 ## Installation
 **Before running the following steps, please reach out to us at [data@rearc.io](mailto:data@rearc.io) so that we can help add you to the platform.**
 
-To install, simply run the [adx_data_plane.cfn.yaml](source/adx_data_plane.cfn.yaml) Cloudformation template inside the AWS account where your data products reside (or will reside).
+To install, simply deploy the [CloudFormation Stack](cloudformation/) or [CDK Stack](cdk/) inside the AWS account where your data products reside (or will reside).
 
 This will create a cross-account role that allows Rearc to perform a very limited set of ADX-related actions on your behalf, as well as an S3 bucket where data assets for publish are kept.
 
-There are a few parameters that must be set in the Cloudformation template:
+There are a few parameters that must be set:
 | Parameter Name  | Valid values  | Description   |
 | --------------- | ------------- | ------------- |
 | **AssetBucketName** | S3 bucket name (e.g., `my-example-bucket`)  | The name of the S3 bucket where your data assets reside (or will reside). This bucket must reside in the AWS account where the Cloudformation template is running. |
 | **CreateAssetBucket** | `true` or `false`  | If this is `true`, the template will create the bucket given in `AssetBucketName`. Set this to `false` if you wish to use a pre-existing assets bucket. |
+| **RegistrationTopicARN** | SNS Topic ARN | The ARN of the SNS Topic used for registering with the control plane - provided during onboarding. Please reach out to data@rearc.io for this value. |
 | **ControlPlaneAccount** | AWS account ID | The account ID of the Rearc control plane. Please reach out to data@rearc.io for this value. |
 | **ExternalId** | AWS External ID  | The External ID for the cross-account role. Please reach out to data@rearc.io for this value. |
+
+### CloudFormation Setup
+<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https://s3.amazonaws.com/rearc-control-plane-cloudformation/adx-data-plane.cfn.yaml&stackName=ADXDataPlaneStack">
+    <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" alt="Launch Stack" title="Launch Stack" height="30" />
+</a>
+
+### CDK Setup
+From the [cdk](cdk/) directory, run the following commands:
+```
+npm install
+npm run cdk deploy -- --parameters AssetBucketName=<bucket> --parameters CreateAssetBucket=<true|false> --parameters RegistrationTopicARN=<topic> --parameters ControlPlaneAccount=<account> --parameters ExternalId=<id>
+```
+
+If the aws account you're deploy to was never boostrapped before, run the following command before deploying:
+```
+npm run cdk bootstrap aws://<account-id>/<region>
+```
 
 ## Usage
 To use the data platform:

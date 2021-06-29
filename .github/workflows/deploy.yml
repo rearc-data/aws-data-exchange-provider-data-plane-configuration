@@ -1,0 +1,36 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Build CloudFormation Template
+        run: |
+          cd cdk
+          npm install
+          npm run synth
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload CloudFormation Template to S3
+        uses: docker://amazon/aws-cli:latest
+        with:
+          args: s3 cp cdk/adx-data-plane.cfn.yaml s3://rearc-control-plane-cloudformation/ --acl public-read
