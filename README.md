@@ -24,6 +24,7 @@ There are a few parameters that must be set:
 | --------------- | ------------- | ------------- |
 | **AssetBucketName** | S3 bucket name (e.g., `my-example-bucket`)  | The name of the S3 bucket where your data assets reside (or will reside). This bucket must reside in the AWS account where the Cloudformation template is running. |
 | **CreateAssetBucket** | `true` or `false`  | If this is `true`, the template will create the bucket given in `AssetBucketName`. Set this to `false` if you wish to use a pre-existing assets bucket. |
+| **RegistrationTopicARN** | SNS Topic ARN | The ARN of the SNS Topic used for registering with the control plane - provided during onboarding. Please reach out to data@rearc.io for this value. |
 | **ControlPlaneAccount** | AWS account ID | The account ID of the Rearc control plane. Please reach out to data@rearc.io for this value. |
 | **ExternalId** | AWS External ID  | The External ID for the cross-account role. Please reach out to data@rearc.io for this value. |
 
@@ -36,7 +37,7 @@ There are a few parameters that must be set:
 From the [cdk](cdk/) directory, run the following commands:
 ```
 npm install
-npm run cdk deploy -- --parameters AssetBucketName=<bucket> --parameters CreateAssetBucket=<true|false> --parameters ControlPlaneAccount=<account> --parameters ExternalId=<id>
+npm run cdk deploy -- --parameters AssetBucketName=<bucket> --parameters CreateAssetBucket=<true|false> --parameters RegistrationTopicARN=<topic> --parameters ControlPlaneAccount=<account> --parameters ExternalId=<id>
 ```
 
 If the aws account you're deploy to was never boostrapped before, run the following command before deploying:
