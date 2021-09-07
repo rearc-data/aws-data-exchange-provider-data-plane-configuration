@@ -30,6 +30,10 @@ Parameters:
     Type: String
     Description: External ID that Rearc will use when accessing resources on this account
     Default: rearcdata
+  EnvName:
+    Type: String
+    Default: prod
+    Description: Environment name for control plane. Keep as "prod" unless instructed otherwise
 Conditions:
   ShouldCreateAssetBucket: !Equals
     - true
@@ -50,7 +54,7 @@ Resources:
     Type: 'AWS::IAM::Role'
     Properties:
       RoleName: !Sub 
-        - 'Rearc-CrossAccountRole-${DataPlaneAccount}'
+        - 'Rearc-${EnvName}-CrossAccountRole-${DataPlaneAccount}'
         - {DataPlaneAccount: !Ref AWS::AccountId }
       AssumeRolePolicyDocument:
         Statement:
