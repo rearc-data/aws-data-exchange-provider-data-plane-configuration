@@ -17,7 +17,7 @@ Parameters:
     AllowedValues:
       - true
       - false
-  RegistrationTopicARN:
+  OnboardingTopicARN:
     Type: String
     Description: >-
       SNS Topic ARN for registering with the control plane - provided during
@@ -138,12 +138,12 @@ Resources:
                 Condition:
                   ForAnyValue:StringEquals:
                     aws:CalledVia: dataexchange.amazonaws.com
-  RegistrationCustomResource:
+  OnboardingCustomResource:
     Properties:
-      ServiceToken: !Ref RegistrationTopicARN 
+      ServiceToken: !Ref OnboardingTopicARN 
       ControlPlaneRoleArn: !GetAtt CrossAccountRole.Arn 
       ControlPlaneExternalId: !Ref ExternalId
       AssetBucketName: !Ref AssetBucketName
       CustomerID: !Ref AWS::AccountId 
-    Type: Custom::RegistrationCustomResource
+    Type: Custom::OnboardingCustomResource
     Version: '1.0'

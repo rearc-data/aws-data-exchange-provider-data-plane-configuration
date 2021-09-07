@@ -21,7 +21,7 @@ aws cloudformation deploy --stack-name "$STACK_NAME" \
               ExternalId="$EXTERNAL_ID" \
               AssetBucketName="$ASSET_BUCKET_NAME" \
               CreateAssetBucket="$CREATE_ASSET_BUCKET" \
-              RegistrationTopicARN="$ONBOARDING_TOPIC_ARN" \
+              OnboardingTopicARN="$ONBOARDING_TOPIC_ARN" \
               EnvName="prod" \
   --capabilities "CAPABILITY_AUTO_EXPAND" "CAPABILITY_NAMED_IAM" "CAPABILITY_IAM" \
   --region "$REGION" \
